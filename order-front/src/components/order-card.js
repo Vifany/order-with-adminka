@@ -140,8 +140,6 @@ export default function OrderCard(props){
             {() => 
               <OutlinedInput
                 size = 'small'
-                id="filled-adornment-weight"
-                aria-describedby="filled-weight-helper-text"
                 error = {wrongP}
                 inputProps={{
                   'aria-label': 'телефон',
@@ -156,7 +154,6 @@ export default function OrderCard(props){
                   (wrongP ? "block":"none")
                 }}
                 error  
-                id="filled-weight-helper-text"
                 >
                   Введите правильный номер телефона
                 </FormHelperText>
@@ -169,7 +166,6 @@ export default function OrderCard(props){
             </FormLabel>
             <OutlinedInput
               size = 'small'
-              aria-describedby="filled-weight-helper-text"
               endAdornment={<InputAdornment position="end">{naem.length}/30</InputAdornment>}
               inputProps={{
                 'aria-label': 'имя',
@@ -187,7 +183,6 @@ export default function OrderCard(props){
                 display:
                 (wrongN ? "block":"none")
               }}
-              id="filled-weight-helper-text"
             >
               В имени могут содержаться только буквы, дефисы и пробелы
             </FormHelperText>
@@ -215,7 +210,6 @@ export default function OrderCard(props){
                 display:
                 (wrongE ? "block":"none")
               }}
-              id="filled-weight-helper-text"
             >
               Введите корректный адрес электронной почты
             </FormHelperText>

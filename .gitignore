@@ -1,4 +1,4 @@
 order-back/env/
 order-back/upload/
-order-back/_pycache_/
+order-back/__pycache__/
 order-back/orders.db
