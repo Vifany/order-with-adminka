@@ -87,8 +87,10 @@ export default function OrderCard(props){
       }).then((response)=>{
           if (response.status == 201){ 
             props.done(true);
-          }
-          else{
+            setNaem('');
+            setPhone('');
+            setEmail('');
+
           }
         }).catch(function (error) {
           console.log(error);
