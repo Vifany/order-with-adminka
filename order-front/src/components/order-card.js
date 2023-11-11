@@ -2,7 +2,7 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { CardMedia } from '@mui/material';
+import { CardMedia, Typography } from '@mui/material';
 import pict from '../static/pict.jpg'
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -161,17 +161,43 @@ export default function OrderCard(){
           </Stack>
         </CardContent>
         </Box>
-        <CardMedia
-          component="img"
-          image={pict}
-          alt="landscape"
-          
-          style = {{
-            maxWidth: '62%',
-            height: 'auto',
-            oveflow: ''
+        <div style={{
+          position: 'relative',
+          maxWidth: '68%',
+          height: 'auto',
+          }} >
+          <CardMedia
+            component="img"
+            image={pict}
+            alt="landscape"
+            
+            style = {{
+              maxWidth: 'auto',
+              height: '100%',
+              oveflow: ''
+            }}
+          />
+          <Typography           
+          sx={{
+            alignContent: 'right',
+            position: 'absolute',
+            bottom: 8, 
+            left: '50%', 
+            transform: 'translateX(-50%)',
+            color: '#CEDFF3'
           }}
-        />
+          >
+          Image by 
+           <a 
+            href="https://www.freepik.com/free-vector/watercolor-adventure-background_16921981.htm#query=watercolor%20landscape&position=28&from_view=keyword&track=ais"
+          style={{
+            color:'#8C6766'
+          }}
+          >
+              Freepik
+          </a>
+          </Typography>
+        </div>
     </Card>
   ) 
 }
