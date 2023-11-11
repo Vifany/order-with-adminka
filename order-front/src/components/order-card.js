@@ -17,7 +17,7 @@ import Button from '@mui/material/Button';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import axios from 'axios';
 
-let api_url = ''
+let api_url = 'http://127.0.0.1:8000/add_order'
 
 
 export default function OrderCard(props){
@@ -80,13 +80,12 @@ export default function OrderCard(props){
       return;
     }
     else{
-      await axios.post(api_url,
-        {
-          p_number: phone,
-          username: naem,
-          mail: email
-        } ).then((response)=>{
-          if (response.status== 201){ 
+      await axios.post(api_url,{
+        "name": naem,
+        "phone": phone,
+        "email": email 
+      }).then((response)=>{
+          if (response.status == 201){ 
             props.done(true);
           }
           else{
