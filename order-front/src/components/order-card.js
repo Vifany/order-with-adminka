@@ -1,41 +1,87 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import { CardMedia } from '@mui/material';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import pict from '../static/pict.jpg'
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import { Stack } from '@mui/material';
 import InputMask from'react-input-mask';
+import validator from 'validator';
+import Button from '@mui/material/Button';
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 
 
 export default function OrderCard(){
 
   let [naem, setNaem] = React.useState("");
+  let [wrongN, setWrongN] = React.useState(false)
   let [phone, setPhone] = React.useState("");
   let [wrongP, setWrongP] = React.useState(false);
+  let [email, setEmail] = React.useState('');
+  let [wrongE, setWrongE] = React.useState(false);
+
+
+
+  function valNaem(){
+    if (
+        (validator.isAlpha((naem + ''),'ru-RU', {ignore:' -'}))
+        ||
+        (naem.length===0)
+      ){
+      setWrongN(false)
+    } else{setWrongN(true)}
+  };
+  function valPhone(){
+    if (
+      (validator.isMobilePhone(phone + ''), 'ru-RU', {strictMode: true})
+      &&
+      (phone.length === 16)
+      ){
+      setWrongP(false)
+    } else{setWrongP(true)};
+  };
+
+  function valEmail(){
+    if (validator.isEmail(email + '')){
+      setWrongE(false)
+    } else{setWrongE(true)}
+  };
+
+  function handleEmail(e){
+    setEmail(e.target.value);
+    valEmail()
+  }
 
   function handlePhone(e){
     setPhone(e.target.value);
-    if (phone.length == 16){
-      setWrongP(false)
-    } else {setWrongP(true)};
-
+    valPhone();
   };
 
   function handleNameChange(e){
     setNaem(e.target.value);
+    valNaem();
   };
 
+  function sendOrder(){
+
+  };
+
+
   return(
-    <Card sx={{ display: 'flex', width: 'auto', maxHeight: '68vh', minHeight:'16em'}}>
+    <Card 
+      elevation={4}
+      sx={{ 
+        display: 'flex', 
+        width: 'auto', 
+        maxHeight: '68vh', 
+        minHeight:'16em',
+        boxShadow:25
+      }}
+      >
       <Box>
       <CardContent
         sx={{
@@ -55,7 +101,8 @@ export default function OrderCard(){
           value={phone}
           disabled={false}
           maskChar=""
-          onChange={handlePhone}
+          onChange = {handlePhone}
+          onBlur = {valPhone}
           >
             {() => 
               <OutlinedInput
@@ -83,7 +130,9 @@ export default function OrderCard(){
               }}
               value = {naem}
               defaultValue=''
+              error = {wrongN}
               onChange ={handleNameChange}
+              onBlur = {valNaem}
             />
             <FormHelperText id="filled-weight-helper-text">Имя</FormHelperText>
           </FormControl>
@@ -91,12 +140,24 @@ export default function OrderCard(){
             <OutlinedInput
               type="email"
               size = 'small'
+              value = {email}
+              onChange = {handleEmail}
+              onBlur={valEmail}
+              error = {wrongE}
               inputProps={{
                 'aria-label': 'Электронная почта',
               }}
             />
             <FormHelperText id="filled-weight-helper-text">Электронная почта</FormHelperText>
           </FormControl>
+          <Button 
+            variant="contained" 
+            endIcon={<ShoppingCartCheckoutIcon />}
+            sx={{ 
+              m: 1, 
+              }}>
+            Оплатить
+          </Button>
           </Stack>
         </CardContent>
         </Box>
