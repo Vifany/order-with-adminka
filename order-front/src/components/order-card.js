@@ -8,15 +8,20 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
+import {FormLabel} from '@mui/material';
 import { Stack } from '@mui/material';
 import InputMask from'react-input-mask';
+import {InputLabel} from '@mui/material';
 import validator from 'validator';
 import Button from '@mui/material/Button';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import axios from 'axios';
+
+let api_url = ''
 
 
-export default function OrderCard(){
-
+export default function OrderCard(props){
+  let [unchanged, setChanged] = React.useState(true)
   let [naem, setNaem] = React.useState("");
   let [wrongN, setWrongN] = React.useState(false)
   let [phone, setPhone] = React.useState("");
@@ -25,17 +30,17 @@ export default function OrderCard(){
   let [wrongE, setWrongE] = React.useState(false);
 
 
-
-  function valNaem(){
+  async function  valNaem(){
     if (
         (validator.isAlpha((naem + ''),'ru-RU', {ignore:' -'}))
         ||
         (naem.length===0)
       ){
       setWrongN(false)
-    } else{setWrongN(true)}
+    } else{setWrongN(true)};
+    setChanged(false);
   };
-  function valPhone(){
+  async function valPhone(){
     if (
       (validator.isMobilePhone(phone + ''), 'ru-RU', {strictMode: true})
       &&
@@ -43,12 +48,14 @@ export default function OrderCard(){
       ){
       setWrongP(false)
     } else{setWrongP(true)};
+    setChanged(false);
   };
 
-  function valEmail(){
+  async function valEmail(){
     if (validator.isEmail(email + '')){
       setWrongE(false)
-    } else{setWrongE(true)}
+    } else{setWrongE(true)};
+    setChanged(false);
   };
 
   function handleEmail(e){
@@ -66,10 +73,30 @@ export default function OrderCard(){
     valNaem();
   };
 
-  function sendOrder(){
+  async function sendOrder(){
 
+    if (wrongE||wrongN||wrongP||unchanged){
+      props.err(true);
+      return;
+    }
+    else{
+      await axios.post(api_url,
+        {
+          p_number: phone,
+          username: naem,
+          mail: email
+        } ).then((response)=>{
+          if (response.status== 201){ 
+            props.done(true);
+          }
+          else{
+          }
+        }).catch(function (error) {
+          console.log(error);
+          props.err(true);
+        })
+    };
   };
-
 
   return(
     <Card 
@@ -95,7 +122,12 @@ export default function OrderCard(){
         justifyContent="center"
         
         >
-        <FormControl sx={{ m: 1, width: '19em' }} variant="filled">
+        <FormControl sx={{width: '19em' }} variant="filled">
+          <FormLabel
+              size = 'small'
+            >
+              Tелефон
+          </FormLabel>
           <InputMask
           mask='+7(999)999-99-99'
           value={phone}
@@ -117,9 +149,23 @@ export default function OrderCard(){
               />
             }
             </InputMask>
-            <FormHelperText id="filled-weight-helper-text">Tелефон</FormHelperText>
+                <FormHelperText
+                sx={{
+                  display:
+                  (wrongP ? "block":"none")
+                }}
+                error  
+                id="filled-weight-helper-text"
+                >
+                  Введите правильный номер телефона
+                </FormHelperText>
           </FormControl>
-          <FormControl sx={{ m: 1, width: '19em' }} variant="filled">
+          <FormControl sx={{ width: '19em' }} variant="filled">
+            <FormLabel
+              variant = 'outlined'
+            >
+              Имя
+            </FormLabel>
             <OutlinedInput
               size = 'small'
               aria-describedby="filled-weight-helper-text"
@@ -134,9 +180,23 @@ export default function OrderCard(){
               onChange ={handleNameChange}
               onBlur = {valNaem}
             />
-            <FormHelperText id="filled-weight-helper-text">Имя</FormHelperText>
+            <FormHelperText
+              error 
+              sx={{
+                display:
+                (wrongN ? "block":"none")
+              }}
+              id="filled-weight-helper-text"
+            >
+              В имени могут содержаться только буквы, дефисы и пробелы
+            </FormHelperText>
           </FormControl>
-          <FormControl sx={{ m: 1, width: '19em' }} variant="filled">
+          <FormControl sx={{ width: '19em' }} variant="filled">
+            <FormLabel
+              size = 'small'
+            >
+              Электронная почта
+            </FormLabel>
             <OutlinedInput
               type="email"
               size = 'small'
@@ -148,10 +208,20 @@ export default function OrderCard(){
                 'aria-label': 'Электронная почта',
               }}
             />
-            <FormHelperText id="filled-weight-helper-text">Электронная почта</FormHelperText>
+            <FormHelperText
+              error 
+              sx={{
+                display:
+                (wrongE ? "block":"none")
+              }}
+              id="filled-weight-helper-text"
+            >
+              Введите корректный адрес электронной почты
+            </FormHelperText>
           </FormControl>
           <Button 
             variant="contained" 
+            onClick={sendOrder}
             endIcon={<ShoppingCartCheckoutIcon />}
             sx={{ 
               m: 1, 
@@ -165,6 +235,7 @@ export default function OrderCard(){
           position: 'relative',
           maxWidth: '68%',
           height: 'auto',
+          overflow:"clip"
           }} >
           <CardMedia
             component="img"
@@ -174,27 +245,26 @@ export default function OrderCard(){
             style = {{
               maxWidth: 'auto',
               height: '100%',
-              oveflow: ''
             }}
           />
-          <Typography           
+          <Typography   
+          textAlign={'center'}        
           sx={{
-            alignContent: 'right',
             position: 'absolute',
             bottom: 8, 
             left: '50%', 
             transform: 'translateX(-50%)',
-            color: '#CEDFF3'
+            color: '#CEDFF3',
           }}
           >
-          Image by 
-           <a 
+          Image by<br/>
+          <a 
             href="https://www.freepik.com/free-vector/watercolor-adventure-background_16921981.htm#query=watercolor%20landscape&position=28&from_view=keyword&track=ais"
           style={{
-            color:'#8C6766'
+            color:'cyan'
           }}
           >
-              Freepik
+            Freepik
           </a>
           </Typography>
         </div>
